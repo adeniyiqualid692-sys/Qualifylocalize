@@ -1,31 +1,27 @@
 # Qualifylocalize
 
-Original responsive corporate website for Qualifylocalize. Buildless HTML, CSS, and JavaScript in `public/`.
+A 14-page responsive translation and localization website using buildless HTML, CSS, and Vanilla JavaScript. Serve `public/` from GitHub, or `dist/` in the Sites source checkout, as the website root. No framework or build command is required.
 
-## Run locally
+## Forms
 
-Run `python3 -m http.server 8000 --directory public`, then visit http://localhost:8000.
+Quote requests, contact enquiries, and newsletter subscription requests POST to `https://formspree.io/f/xwlvgeae`. This is a public form endpoint, not a secret API key. No secret belongs in the frontend.
 
-## Deployment
+`forms.js` uses native Vanilla JS AJAX (`fetch` and `FormData`) with `Accept: application/json`, tailored to the existing calculator and forms. Each form also has an HTML POST action as a fallback. There is no external SDK dependency.
 
-Serve `public/` as the website root on any static host (Cloudflare Pages, Netlify, Vercel, or GitHub Pages). No build command or dependencies are required. For GitHub Pages, use a Pages deployment workflow that uploads `public/` or select an equivalent static host. No production hosting has been configured by this commit.
+Submissions include `request_type`, `_subject`, the visitor's email, and an empty `_gotcha` spam honeypot. Quotes include service, source and target languages, words, timeline, notes, and a clearly labeled illustrative budget. Contact enquiries include name, subject, and message. Newsletter submissions request updates; they do not enrol a user in a mailing-list platform without a Formspree workflow.
 
-## Features
+The UI shows sending/success/error states, disables submit buttons while in flight, blocks duplicate in-flight requests, marks server-invalid fields, and preserves entries on errors. Connection failures/timeouts do not trigger automatic POST retries. WhatsApp still opens a separate prepared message.
 
-- Responsive sticky navigation, custom animated SVG globe, and reduced-motion support.
-- Six services, keyboard-accessible industry tabs, and a filterable illustrative linguist directory with empty states and reset.
-- Quote calculator with word count, service, and timeline inputs; same-language validation; indicative GBP ranges; custom quotes for multimedia and DTP.
-- Email and WhatsApp handoffs with a prepared project brief. The visitor reviews and sends the message in their own app. No server submissions, attachments, or automatic delivery.
-- Newsletter subscription requests open an email draft; there is no mailing-list backend or automatic subscription.
+Delivery depends on the Formspree account's activation, recipient settings, limits, spam rules, and any domain restrictions. Test one real submission from the deployed site and confirm it appears in the Formspree dashboard and intended inbox. Live delivery has not been tested by this implementation; automated tests use mocks and send no notifications.
 
-## Content to verify before marketing launch
+If restricting allowed domains in Formspree, include the live preview origin and any custom production domain you use. Configure mailing-list automation in Formspree if desired.
 
-Replace illustrative linguist profiles with approved real profiles and verified credentials. Set actual approved prices, language availability, and any performance figures before publishing such claims. Current sample estimates are explicitly labeled and do not promise rates. No invented testimonials, client logos, ratings, accreditation, or company performance metrics are used.
+## Checks
 
-The contact email is support@qualifylocalize.com and WhatsApp is +447770012186. Confirm both channels are monitored. Confirm requirements individually for certified translations; no accreditation is claimed.
+Run `node --check public/app.js`, `node --check public/forms.js`, and `node tests/formspree.test.cjs` from the GitHub checkout. In the Sites checkout, use `dist/` in place of `public/`; the tests detect either layout.
 
-Typography uses Google Fonts with local system fallbacks. All graphic elements are original CSS/SVG. The reference screenshot informed the business category only; its assets and text were not reused.
+The submission tests cover success, structured payloads, server validation, rate limiting, malformed errors, network failures, timeouts, submit locking, and recovery. They do not replace a real inbox-delivery test or visual browser verification.
 
-## Verification
+## Content
 
-`node --check public/app.js` and the included `python3 checks.py` validate JavaScript syntax, HTML local asset paths, fragment destinations, required service/contact content, and excluded wording. Browser rendering could not be verified in the supplied container because the managed preview could not mount its process filesystem.
+Linguist profiles and pricing are illustrative. Replace with verified, approved business data before representing them as real availability or rates. No invented customer testimonials, certifications, or performance metrics are included. Confirm certification requirements individually with each request.

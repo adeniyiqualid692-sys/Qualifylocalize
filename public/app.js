@@ -25,10 +25,8 @@ document.querySelectorAll('[data-service]').forEach(a=>a.addEventListener('click
 function updateEstimate(){const f=$('#quote-form').elements;f.target.setCustomValidity(f.source.value===f.target.value?'Please choose different source and target languages.':'');if([services[3],services[4]].includes(f.service.value)){$('#estimate').textContent='Custom quote';return;}const words=Number(f.words.value);if(!words||words<1||words>10000000){$('#estimate').textContent='Enter word count';return;}const rate=f.service.value===services[5]?.05:.10;const factor=f.timeline.value==='priority'?1.25:f.timeline.value==='flexible'?.95:1;const low=Math.max(35,words*rate*factor);const money=new Intl.NumberFormat('en-GB',{style:'currency',currency:'GBP',maximumFractionDigits:0});$('#estimate').textContent=`${money.format(low)}–${money.format(low*1.6)}`;}
 $('#quote-form').addEventListener('input',updateEstimate);$('#quote-form').addEventListener('change',updateEstimate);updateEstimate();
 function brief(){const f=$('#quote-form').elements;return `Hello Qualifylocalize,\n\nPlease prepare a tailored quote.\nService: ${f.service.value}\nLanguages: ${f.source.value} → ${f.target.value}\nApproximate words: ${f.words.value}\nTimeline: ${f.timeline.value}\nContact email: ${f.email.value}\nNotes: ${f.notes.value||'None provided'}\n\nIllustrative planning estimate: ${$('#estimate').textContent} (not an agreed rate).\nPlease confirm final pricing and availability.`;}
-$('#quote-form').addEventListener('submit',e=>{e.preventDefault();updateEstimate();if(!e.currentTarget.reportValidity())return;window.location.href=`mailto:support@qualifylocalize.com?subject=${encodeURIComponent('Qualifylocalize — project quote request')}&body=${encodeURIComponent(brief())}`;$('#quote-status').textContent='Your email app will open with your brief. Review and send it there, or use WhatsApp below if your email app is not configured.';});
 $('#whatsapp-quote').addEventListener('click',()=>{updateEstimate();if(!$('#quote-form').reportValidity())return;window.open(`https://wa.me/447770012186?text=${encodeURIComponent(brief())}`,'_blank','noopener,noreferrer');$('#quote-status').textContent='Your brief opens in WhatsApp. Review and send it there.';});
 }
-$('#newsletter').addEventListener('submit',e=>{e.preventDefault();window.location.href=`mailto:support@qualifylocalize.com?subject=Newsletter%20subscription%20request&body=${encodeURIComponent(`Please add ${$('#newsletter-email').value} to your localization updates, when available.`)}`;$('#newsletter-status').textContent='Complete your subscription request in your email app.';});
 $('#year').textContent=new Date().getFullYear();
 if('IntersectionObserver' in window&&!window.matchMedia('(prefers-reduced-motion: reduce)').matches){const ob=new IntersectionObserver(entries=>entries.forEach(e=>{if(!e.isIntersecting)return;const el=e.target,goal=Number(el.dataset.count);let start;const tick=t=>{start??=t;el.textContent=Math.min(goal,Math.round((t-start)/700*goal));if(t-start<700)requestAnimationFrame(tick);};requestAnimationFrame(tick);ob.unobserve(el);}),{threshold:.5});document.querySelectorAll('[data-count]').forEach(el=>ob.observe(el));}
 
@@ -40,9 +38,3 @@ if ($('#quote-form')) {
  if(['Technology','Legal','Medical','Finance'].includes(params.get('industry')))$('#quote-form').elements.notes.value='Industry: '+params.get('industry');
  $('#quote-form').dispatchEvent(new Event('input'));
 }
-if ($('#contact-form')) $('#contact-form').addEventListener('submit',e=>{
- e.preventDefault();const f=e.currentTarget.elements;
- const body=`Hello Qualifylocalize,\n\n${f.message.value}\n\nFrom: ${f.person.value}\nEmail: ${f.email.value}`;
- location.href=`mailto:support@qualifylocalize.com?subject=${encodeURIComponent(f.subject.value)}&body=${encodeURIComponent(body)}`;
- $('#contact-status').textContent='Your email app will open. Review and send the enquiry there.';
-});
